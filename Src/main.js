@@ -21,6 +21,40 @@ const skillTags = document.querySelectorAll(".skill-tag");
 const navLinks = document.querySelectorAll(".nav-link");
 const socialProofItems = document.querySelectorAll(".social-proof-item");
 
+// Stockage des références pour la gestion des ressources
+let floatingIntervals = []; // Pour stocker les références des intervalles
+
+/**
+ * Détection des appareils à faibles ressources ou préférence pour les animations réduites
+ * @returns {boolean} True si l'appareil est à faible puissance ou si l'utilisateur préfère réduire les animations
+ */
+const isLowPowerDevice = () => {
+  return (
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    )
+  );
+};
+
+/**
+ * Fonction utilitaire pour limiter la fréquence d'exécution d'une fonction (throttling)
+ * @param {Function} func - Fonction à exécuter
+ * @param {number} delay - Délai minimum entre deux exécutions en ms
+ * @returns {Function} Fonction avec throttling
+ */
+function throttle(func, delay) {
+  let lastCall = 0;
+  return function (...args) {
+    const now = new Date().getTime();
+    if (now - lastCall < delay) {
+      return;
+    }
+    lastCall = now;
+    return func(...args);
+  };
+}
+
 /**
  * Gestion du thème (clair/sombre)
  * Utilise localStorage pour persister les préférences utilisateur
@@ -160,25 +194,38 @@ function closeMobileMenu() {
 
 /**
  * Gère la soumission du formulaire de contact
- * Inclut validation basique et feedback utilisateur
+ * Inclut validation améliorée et protection XSS basique
  */
 function handleFormSubmit(e) {
   e.preventDefault();
 
-  // Récupération des données du formulaire
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const message = document.getElementById("message").value;
+  // Récupération des données du formulaire avec nettoyage des espaces
+  const name = document.getElementById("name").value.trim();
+  const email = document.getElementById("email").value.trim();
+  const message = document.getElementById("message").value.trim();
 
-  // Validation simple des champs
+  // Validation des champs obligatoires
   if (!name || !email || !message) {
     alert("Veuillez remplir tous les champs.");
     return;
   }
 
+  // Validation de l'email avec regex
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    alert("Veuillez entrer une adresse email valide.");
+    return;
+  }
+
+  // Protection XSS basique
+  const sanitizeName = name.replace(/[<>]/g, "");
+  const sanitizeMessage = message.replace(/[<>]/g, "");
+
   // Normalement, ces données seraient envoyées à un serveur
   // Pour cette démo, simple affichage d'un message de succès
-  alert(`Merci ${name} pour votre message ! Je vous contacterai bientôt.`);
+  alert(
+    `Merci ${sanitizeName} pour votre message ! Je vous contacterai bientôt.`
+  );
 
   // Réinitialisation du formulaire
   contactForm.reset();
@@ -353,20 +400,41 @@ function setupTypingEffect() {
 
 /**
  * Effet de flottement pour les éléments
+ * Version optimisée avec gestion des intervalles pour éviter les fuites mémoire
  */
 function setupFloatingElements() {
+  // Nettoyage des intervalles précédents pour éviter les fuites mémoire
+  cleanupFloatingElements();
+
+  // Réduction des animations sur les appareils à faible puissance
+  if (isLowPowerDevice()) {
+    return; // Pas d'animation de flottement sur les appareils à faible puissance
+  }
+
   const floatingElements = document.querySelectorAll(
     ".btn, .social-icon, .logo"
   );
 
   floatingElements.forEach((element) => {
     // Animation aléatoire légère de flottement
-    setInterval(() => {
+    const interval = setInterval(() => {
       const randomY = (Math.random() - 0.5) * 5;
       element.style.transform = `translateY(${randomY}px)`;
       element.style.transition = "transform 2s ease-in-out";
     }, 2000 + Math.random() * 1000);
+
+    // Stockage des références pour nettoyage ultérieur
+    floatingIntervals.push(interval);
   });
+}
+
+/**
+ * Nettoie les intervalles pour éviter les fuites mémoire
+ * À appeler lorsque les animations ne sont plus nécessaires
+ */
+function cleanupFloatingElements() {
+  floatingIntervals.forEach(clearInterval);
+  floatingIntervals = [];
 }
 
 /**
@@ -472,10 +540,18 @@ document.addEventListener("DOMContentLoaded", function () {
   animateSkillTags();
   animateSocialProofItems();
   setupTypingEffect();
-  setTimeout(setupFloatingElements, 2000); // Délai pour démarrer l'effet de flottement
 
-  // Événement de défilement pour les animations
-  window.addEventListener("scroll", animateOnScroll);
+  // Délai pour démarrer l'effet de flottement, réduit sur appareils à faible puissance
+  setTimeout(setupFloatingElements, isLowPowerDevice() ? 0 : 2000);
+
+  // Événement de défilement pour les animations avec throttling pour performance
+  const throttledAnimateOnScroll = throttle(animateOnScroll, 100);
+  window.addEventListener("scroll", throttledAnimateOnScroll);
+
+  // Nettoyage des ressources lors de la navigation ou de la fermeture
+  window.addEventListener("beforeunload", function () {
+    cleanupFloatingElements();
+  });
 });
 
 /**
@@ -496,3 +572,59 @@ window
       }
     }
   });
+
+/**
+ * Détection du support pour IntersectionObserver
+ * Polyfill ou fallback si nécessaire
+ */
+if (!("IntersectionObserver" in window)) {
+  // Fallback pour les navigateurs ne supportant pas IntersectionObserver
+  console.log(
+    "IntersectionObserver n'est pas supporté, utilisation du fallback"
+  );
+
+  // Fonction simplifiée pour animer les éléments
+  function animateElementsOnScroll() {
+    document.querySelectorAll(".skill-tag").forEach((tag, index) => {
+      const rect = tag.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        setTimeout(() => {
+          tag.style.opacity = "1";
+          tag.style.transform = "translateY(0)";
+        }, 100 * index);
+      }
+    });
+
+    document.querySelectorAll(".social-proof-value").forEach((value, index) => {
+      const rect = value.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom > 0) {
+        setTimeout(() => {
+          value.classList.add("pulse-animation");
+        }, 300 * index);
+      }
+    });
+  }
+
+  // Remplacer les fonctions utilisant IntersectionObserver
+  window.addEventListener("scroll", throttle(animateElementsOnScroll, 150));
+  animateElementsOnScroll(); // Exécution initiale
+}
+
+/**
+ * Adaptation automatique du thème selon l'heure de la journée
+ * Active le mode sombre entre 20h et 7h si aucune préférence n'est définie
+ */
+function setupAutoDarkMode() {
+  const savedTheme = localStorage.getItem("theme");
+  if (!savedTheme) {
+    const hour = new Date().getHours();
+    if (hour >= 20 || hour < 7) {
+      enableDarkMode();
+    } else {
+      enableLightMode();
+    }
+  }
+}
+
+// Exécuter lors du chargement
+setupAutoDarkMode();
