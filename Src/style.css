@@ -184,19 +184,7 @@ body.dark-mode .section:nth-child(even) {
 
 /* Séparateurs entre les sections */
 .section::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-primary-light),
-    transparent
-  );
-  opacity: 0.5;
+  content: none;
 }
 
 /* Animation du titre de section */
@@ -295,6 +283,30 @@ body.dark-mode .header {
   font-weight: 700;
   color: var(--color-primary);
   letter-spacing: -0.5px;
+  background: linear-gradient(
+    90deg,
+    var(--color-primary),
+    var(--color-accent),
+    var(--color-primary)
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: textGradient 4s linear infinite;
+}
+
+body.dark-mode .logo {
+  background: linear-gradient(
+    90deg,
+    var(--color-primary),
+    var(--color-accent-light),
+    var(--color-primary)
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
 
 .desktop-menu {
@@ -306,11 +318,13 @@ body.dark-mode .header {
   .header nav {
     grid-template-columns: 1fr auto;
     display: grid;
+    padding: 0.75rem 1rem;
   }
 
   .logo {
     grid-column: 1;
-    margin-left: 20px;
+    margin-left: 0;
+    font-size: 1.4rem;
   }
 
   .mobile-combined-actions {
@@ -330,30 +344,32 @@ body.dark-mode .header {
 
   .header-actions .theme-toggle,
   .header-actions .social-icon {
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2rem;
+    height: 2rem;
   }
 
   .mobile-menu-toggle {
     margin-left: 0;
-    margin-right: 20px;
+    margin-right: 12px;
   }
 
   .menu-toggle {
-    padding-right: 0;
+    padding: 0;
+    width: 2rem;
+    height: 1.5rem;
   }
 }
 
 @media (min-width: 768px) and (max-width: 1023px) {
   .logo {
-    margin-left: 25px;
+    margin-left: 0;
   }
 
   .header nav {
     display: grid;
     grid-template-columns: 1fr 2fr 1fr;
     align-items: center;
-    padding: 0.75rem 0;
+    padding: 0.75rem 1rem;
   }
 
   .desktop-menu {
@@ -362,7 +378,7 @@ body.dark-mode .header {
   }
 
   .desktop-actions {
-    padding-right: 25px;
+    padding-right: 0;
   }
 }
 
@@ -770,15 +786,11 @@ body.dark-mode .mobile-nav-link:not(:last-child)::after {
 
 /* Animation des lignes du hamburger lorsque le menu est actif */
 .mobile-menu.active + .header .menu-toggle .hamburger-line:nth-child(1) {
-  transform: translateY(10px) rotate(45deg);
-}
-
-.mobile-menu.active + .header .menu-toggle .hamburger-line:nth-child(2) {
-  opacity: 0;
+  transform: translateY(0.5rem) rotate(45deg);
 }
 
 .mobile-menu.active + .header .menu-toggle .hamburger-line:nth-child(3) {
-  transform: translateY(-10px) rotate(-45deg);
+  transform: translateY(-0.5rem) rotate(-45deg);
 }
 
 /* Hero Section */
@@ -1173,6 +1185,32 @@ body.dark-mode .skills-title {
 .project-image {
   position: relative;
   overflow: hidden;
+  height: 200px; /* Hauteur fixe pour les images de projet */
+}
+
+.project-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 767px) {
+  .project-image {
+    height: 180px;
+  }
+
+  .project-card {
+    max-width: 100%;
+    margin: 0 auto;
+  }
+
+  .project-title {
+    font-size: 1.1rem;
+  }
+
+  .project-description {
+    font-size: 0.8rem;
+  }
 }
 
 .project-image::before {
@@ -1407,7 +1445,7 @@ body.dark-mode .form-textarea {
 .footer {
   background-color: var(--color-dark);
   color: var(--color-light);
-  padding: 3rem 0 1.5rem;
+  padding: 4rem 0 2rem;
   position: relative;
   overflow: hidden;
 }
@@ -1419,47 +1457,35 @@ body.dark-mode .form-textarea {
   left: 0;
   width: 100%;
   height: 5px;
-  background: linear-gradient(90deg, var(--color-primary), transparent);
+  background: linear-gradient(90deg, var(--color-primary), transparent 80%);
 }
 
 .footer-content {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2.5rem;
+  margin-bottom: 3rem;
   position: relative;
   z-index: 1;
 }
 
 @media (min-width: 768px) {
   .footer-content {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-  }
-
-  .footer-brand {
-    flex: 1;
-  }
-
-  .footer-links {
-    flex: 2;
-    flex-direction: row !important;
-    justify-content: center;
+    grid-template-columns: 1fr 2fr 1fr;
     gap: 2rem;
-  }
-
-  .footer-social {
-    flex: 1;
-    justify-content: flex-end;
+    align-items: flex-start;
   }
 }
 
+.footer-brand {
+  text-align: center;
+}
+
 .footer-logo {
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   font-weight: 700;
   color: var(--color-light);
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.75rem;
   position: relative;
   display: inline-block;
 }
@@ -1467,9 +1493,10 @@ body.dark-mode .form-textarea {
 .footer-logo::after {
   content: "";
   position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 40px;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 50px;
   height: 3px;
   background-color: var(--color-primary);
   border-radius: 3px;
@@ -1477,20 +1504,31 @@ body.dark-mode .form-textarea {
 
 .footer-tagline {
   color: rgba(244, 244, 248, 0.8);
-  margin-top: 0.75rem;
+  margin-top: 1rem;
+  font-size: 0.95rem;
 }
 
 .footer-links {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 1rem;
+  align-items: center;
 }
 
 @media (min-width: 768px) {
+  .footer-brand {
+    text-align: left;
+  }
+
+  .footer-logo::after {
+    left: 0;
+    transform: none;
+  }
+
   .footer-links {
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: center;
-    align-items: center;
     gap: 2rem;
   }
 }
@@ -1500,13 +1538,15 @@ body.dark-mode .form-textarea {
   text-decoration: none;
   transition: var(--transition);
   display: inline-block;
-  padding: 0.25rem 0;
+  padding: 0.5rem;
+  font-weight: 500;
+  position: relative;
 }
 
-.footer-link::before {
+.footer-link::after {
   content: "";
   position: absolute;
-  bottom: -2px;
+  bottom: 0;
   left: 0;
   width: 0;
   height: 2px;
@@ -1514,7 +1554,7 @@ body.dark-mode .form-textarea {
   transition: width 0.3s ease;
 }
 
-.footer-link:hover::before {
+.footer-link:hover::after {
   width: 100%;
 }
 
@@ -1525,7 +1565,13 @@ body.dark-mode .form-textarea {
 .footer-social {
   display: flex;
   gap: 1rem;
-  justify-content: flex-start;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .footer-social {
+    justify-content: flex-end;
+  }
 }
 
 .footer-social .social-icon {
@@ -1548,16 +1594,22 @@ body.dark-mode .form-textarea {
   transform: translateY(-5px);
 }
 
-@media (max-width: 767px) {
-  .footer-social {
-    justify-content: center;
-  }
-}
-
 .footer-bottom {
+  position: relative;
   border-top: 1px solid rgba(244, 244, 248, 0.1);
   padding-top: 1.5rem;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  .footer-bottom {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 
 .copyright {
@@ -1567,6 +1619,22 @@ body.dark-mode .form-textarea {
 
 .copyright:hover {
   color: var(--color-primary);
+}
+
+.contact-info {
+  margin: 0;
+}
+
+.contact-info a {
+  color: rgba(244, 244, 248, 0.7);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+.contact-info a:hover {
+  color: var(--color-primary);
+  text-decoration: underline;
 }
 
 /* Améliorations générales pour le mode sombre */
@@ -1636,6 +1704,9 @@ body.dark-mode .desktop-actions .social-icon:hover {
   -webkit-background-clip: text;
   color: transparent;
   animation: textGradient 4s linear infinite;
+  font-size: 1.8rem;
+  margin-top: 0.5rem;
+  font-weight: 600;
 }
 
 body.dark-mode .hero-title span:last-child {
@@ -1652,12 +1723,27 @@ body.dark-mode .hero-title span:last-child {
   color: transparent;
 }
 
+.hero-title span.text-primary {
+  font-size: 2.8rem;
+  font-weight: 700;
+}
+
 @keyframes textGradient {
   0% {
     background-position: 0% 50%;
   }
   100% {
     background-position: 200% 50%;
+  }
+}
+
+@media (max-width: 767px) {
+  .hero-title span:last-child {
+    font-size: 1.5rem;
+  }
+
+  .hero-title span.text-primary {
+    font-size: 2.2rem;
   }
 }
 
@@ -2020,4 +2106,106 @@ body.dark-mode .contact-form:hover::after {
   flex-direction: column;
   align-items: center;
   text-align: center;
+}
+
+/* Responsive improvements for all sections */
+@media (max-width: 767px) {
+  .section {
+    padding: 3rem 0;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  .hero-title {
+    font-size: 2rem;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    text-align: center;
+  }
+
+  .social-proof {
+    gap: 1rem;
+  }
+
+  .social-proof-value {
+    font-size: 1.25rem;
+  }
+
+  .social-proof-label {
+    font-size: 0.75rem;
+  }
+
+  .contact-container {
+    gap: 1.5rem;
+  }
+
+  .contact-form {
+    padding: 1.5rem;
+  }
+}
+
+/* Fix for hamburger menu spacing */
+@media (max-width: 767px) {
+  .hamburger-line {
+    width: 100%;
+    height: 2px;
+  }
+
+  /* When menu is active, adjust hamburger transformation */
+  .mobile-menu.active + .header .menu-toggle .hamburger-line:nth-child(1) {
+    transform: translateY(0.5rem) rotate(45deg);
+  }
+
+  .mobile-menu.active + .header .menu-toggle .hamburger-line:nth-child(3) {
+    transform: translateY(-0.5rem) rotate(-45deg);
+  }
+}
+
+/* Appliquer l'effet de dégradé à d'autres éléments */
+.section-title,
+.contact-subtitle,
+.social-proof-value,
+.footer-logo {
+  background: linear-gradient(
+    120deg,
+    var(--color-dark),
+    var(--color-primary),
+    var(--color-dark)
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: gradientFlow 6s ease infinite;
+}
+
+body.dark-mode .section-title,
+body.dark-mode .contact-subtitle,
+body.dark-mode .social-proof-value,
+body.dark-mode .footer-logo {
+  background: linear-gradient(
+    120deg,
+    var(--color-light),
+    var(--color-primary),
+    var(--color-light)
+  );
+  background-size: 200% auto;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
 }
