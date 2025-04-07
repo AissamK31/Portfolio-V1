@@ -336,30 +336,17 @@ function animateSocialProofItems() {
 }
 
 /**
- * Effet de typage pour le titre principal
+ * Effet de frappe pour le titre secondaire de la section hero
  */
 function setupTypingEffect() {
   const heroTitle = document.querySelector(".hero-title");
   if (heroTitle) {
     const secondLine = heroTitle.querySelector("span:not(.text-primary)");
     if (secondLine) {
+      // Afficher directement le texte complet sans animation
       const text = secondLine.textContent;
-      secondLine.textContent = "";
       secondLine.style.display = "inline-block";
-
-      // Délai initial
-      setTimeout(() => {
-        let i = 0;
-        const typing = setInterval(() => {
-          if (i < text.length) {
-            secondLine.textContent += text.charAt(i);
-            i++;
-          } else {
-            clearInterval(typing);
-            secondLine.classList.add("typed");
-          }
-        }, 80);
-      }, 1000);
+      // Pas d'animation, le texte reste tel quel
     }
   }
 }
