@@ -2430,3 +2430,47 @@ body.dark-mode .footer-logo {
   backface-visibility: hidden;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Version standard de l'animation pulse */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Version standard de l'animation bounce */
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+/* Version standard de l'animation lightPass */
+@keyframes lightPass {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+/* Version standard de l'animation rotateHex */
+@keyframes rotateHex {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
