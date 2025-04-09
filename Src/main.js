@@ -399,8 +399,8 @@ function setupTypingEffect() {
 }
 
 /**
- * Effet de flottement pour les éléments
- * Version optimisée avec gestion des intervalles pour éviter les fuites mémoire
+ * Configure l'effet de flottement léger pour certains éléments
+ * Ajoute une animation de mouvement subtile pour améliorer l'engagement visuel
  */
 function setupFloatingElements() {
   // Nettoyage des intervalles précédents pour éviter les fuites mémoire
@@ -412,7 +412,7 @@ function setupFloatingElements() {
   }
 
   const floatingElements = document.querySelectorAll(
-    ".btn, .social-icon, .logo"
+    ".btn, .social-icon" // Suppression de .logo pour éliminer l'animation sur le nom/prénom
   );
 
   floatingElements.forEach((element) => {
