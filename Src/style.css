@@ -1463,9 +1463,16 @@ body.dark-mode .contact-method-title {
 }
 
 .contact-method-value {
-  color: var(--color-primary);
+  color: var(--color-primary); /* Rouge vif pour une bonne visibilité */
   text-decoration: none;
   transition: var(--transition);
+  font-weight: 700; /* Très gras pour une meilleure lisibilité */
+  display: inline-block;
+}
+
+/* Version sombre pour le .contact-method-value */
+body.dark-mode .contact-method-value {
+  color: var(--color-light);
 }
 
 .contact-method-value:hover {
@@ -1707,10 +1714,15 @@ body.dark-mode .form-textarea {
 }
 
 .contact-info a {
-  color: rgba(244, 244, 248, 0.7);
+  color: var(--color-primary-dark);
   font-size: 0.875rem;
   text-decoration: none;
   transition: var(--transition);
+  font-weight: 700;
+}
+
+body.dark-mode .contact-info a {
+  color: var(--color-light);
 }
 
 .contact-info a:hover {
@@ -2117,7 +2129,6 @@ body.dark-mode .btn:hover::before {
     0% 30%
   );
   padding: 0.85rem 1.75rem;
-  border: none;
 }
 
 /* Accentuer les formes hexagonales des cartes */
